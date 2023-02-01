@@ -1,6 +1,7 @@
 from django.db import models
 from django.forms import model_to_dict
 
+
 def create_dict(model: models.Model) -> dict:
     """
     Recursively creates a dictionary based on the supplied model and all its foreign relationships.
@@ -45,7 +46,6 @@ def get_delta_dict(model_dict_before: dict, model_dict_after: dict) -> dict:
 class User(models.Model):
     username = models.CharField(unique=True, max_length=20)
     password = models.CharField(max_length=99)
-
 class Entity(models.Model):
     name = models.CharField(max_length=100)
 

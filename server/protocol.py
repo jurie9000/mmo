@@ -7,6 +7,7 @@ from server import models
 from autobahn.twisted.websocket import WebSocketServerProtocol
 from autobahn.exception import Disconnected
 
+
 class GameServerProtocol(WebSocketServerProtocol):
     def __init__(self):
         super().__init__()
@@ -20,6 +21,7 @@ class GameServerProtocol(WebSocketServerProtocol):
     def LOGIN(self, sender: 'GameServerProtocol', p: packet.Packet):
         if p.action == packet.Action.Login:
             username, password = p.payloads
+
             if models.User.objects.filter(username=username, password=password).exists():
                 user = models.User.objects.get(username=username)
                 self._actor = models.Actor.objects.get(user=user)
@@ -35,19 +37,21 @@ class GameServerProtocol(WebSocketServerProtocol):
 
         elif p.action == packet.Action.Register:
             username, password, avatar_id = p.payloads
+            
+            
+
             if models.User.objects.filter(username=username).exists():
                 self.send_client(packet.DenyPacket("This username is already taken"))
             else:
                 user = models.User(username=username, password=password)
-                user.save()
-                player_entity = models.Entity(name=username)
-                player_entity.save()
-                player_ientity = models.InstancedEntity(entity=player_entity, x=0, y=0)
-                player_ientity.save()
-                player = models.Actor(instanced_entity=player_ientity, user=user, avatar_id=avatar_id)
-                player.save()
-                self.send_client(packet.OkPacket())
-
+            user.save()
+            player_entity = models.Entity(name=username)
+            player_entity.save()
+            player_ientity = models.InstancedEntity(entity=player_entity, x=0, y=0)
+            player_ientity.save()
+            player = models.Actor(instanced_entity=player_ientity, user=user, avatar_id=avatar_id)
+            player.save()
+            self.send_client(packet.OkPacket())
     def PLAY(self, sender: 'GameServerProtocol', p: packet.Packet):
         if p.action == packet.Action.Chat:
             if sender == self:
@@ -60,8 +64,7 @@ class GameServerProtocol(WebSocketServerProtocol):
             if sender not in self._known_others:
                 # Send our full model data to the new player
                 sender.onPacket(self, packet.ModelDeltaPacket(models.create_dict(self._actor)))
-                self._known_others.add(sender)
-                
+                self._known_others.add(sender)                
         elif p.action == packet.Action.Target:
             self._player_target = p.payloads
 
@@ -153,5 +156,3 @@ class GameServerProtocol(WebSocketServerProtocol):
             self.sendMessage(b)
         except Disconnected:
             print(f"Couldn't send {p} because client disconnected.")
-
-
