@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/ES_Long Day (Instrumental Version) - Collin Lim.mp3-774acb9b61029e3a059a88186b106425.mp3str"
+
+[deps]
+
+source_file="res://ES_Long Day (Instrumental Version) - Collin Lim.mp3"
+dest_files=[ "res://.import/ES_Long Day (Instrumental Version) - Collin Lim.mp3-774acb9b61029e3a059a88186b106425.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
